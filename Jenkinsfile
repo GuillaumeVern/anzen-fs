@@ -2,7 +2,6 @@ pipeline {
     agent {
         docker { 
             image 'ghcr.io/graalvm/native-image-community:25-ol9'
-            args '-v /var/lib/jenkins/.m2:/root/.m2 --security-opt seccomp=unconfined --security-opt apparmor=unconfined'
         }
     }
     
