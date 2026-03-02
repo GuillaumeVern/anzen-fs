@@ -8,6 +8,7 @@ pipeline {
     environment {
         LANG = 'en_US.UTF-8'
         LC_ALL = 'en_US.UTF-8'
+        HOME = '/root'
     }
     
     stages {
