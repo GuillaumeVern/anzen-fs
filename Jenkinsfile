@@ -49,7 +49,7 @@ pipeline {
         stage('Upload to GitHub') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+                    withCredentials([string(credentialsId: '73183d21-d863-4fee-b138-d395cc209e0a', variable: 'GITHUB_TOKEN')]) {
                         def repo = "GuillaumeVern/ansen-fs"
                         def binaryPath = "target/ansenfs"
                         def tagName = "v1.0.${BUILD_NUMBER}"
