@@ -8,7 +8,6 @@ pipeline {
     environment {
         LANG = 'en_US.UTF-8'
         LC_ALL = 'en_US.UTF-8'
-        HOME = '/root'
         JAVA_HOME = "${env.JAVA_HOME}"
     }
     
@@ -22,12 +21,10 @@ pipeline {
         stage('Debug Env') {
             steps {
                 script {
-                    // --- AJOUTE CES LIGNES ---
                     echo "Checking JAVA_HOME value:"
-                    sh 'echo $JAVA_HOME'                // Affiche le chemin
-                    sh 'ls -ld $JAVA_HOME'             // Vérifie si le dossier existe et ses droits
-                    sh '$JAVA_HOME/bin/java -version' // Vérifie si java est exécutable
-                    // -------------------------
+                    sh 'echo $JAVA_HOME'
+                    sh 'ls -ld $JAVA_HOME'
+                    sh '$JAVA_HOME/bin/java -version'
                 }
             }
         }
@@ -51,10 +48,9 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: '73183d21-d863-4fee-b138-d395cc209e0a', usernameVariable: 'GIT_USER', passwordVariable: 'GITHUB_TOKEN')]) {
                         def repo = "GuillaumeVern/ansen-fs"
-                        def binaryPath = "target/ansenfs"
+                        def binaryPath = "./target/ansenfs"
                         def tagName = "v1.0.${BUILD_NUMBER}"
 
-                        // 1. Créer une Release sur GitHub
                         sh """
                         curl -X POST \
                           -H "Authorization: token ${GITHUB_TOKEN}" \
@@ -63,7 +59,6 @@ pipeline {
                           https://api.github.com/repos/${repo}/releases
                         """
 
-                        // 2. Upload le binaire dans la Release
                         sh """
                         curl -X POST \
                           -H "Authorization: token ${GITHUB_TOKEN}" \
