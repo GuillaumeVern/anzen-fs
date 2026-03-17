@@ -74,8 +74,8 @@ pipeline {
                           -H "Authorization: token ${GITHUB_TOKEN}" \
                           -H "Content-Type: application/octet-stream" \
                           -H "X-GitHub-Api-Version: 2026-03-10" \
-                          https://uploads.github.com/repos/${repo}/releases/tags/${tagName}/assets?name=ansenfs \
-                          --data-binary @${binaryPath}
+                          https://uploads.github.com/repos/${repo}/releases/${releaseID}/assets?name=ansenfs \
+                          --data-binary '@${binaryPath}'
                         """
                     }
                 }
