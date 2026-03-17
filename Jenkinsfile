@@ -48,7 +48,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: '73183d21-d863-4fee-b138-d395cc209e0a', usernameVariable: 'GIT_USER', passwordVariable: 'GITHUB_TOKEN')]) {
                         def repo = "GuillaumeVern/ansen-fs"
-                        def binaryPath = "./target/ansenfs"
+                        def binaryPath = "target/ansenfs"
                         def tagName = "v1.0.${BUILD_NUMBER}"
 
                         sh """
@@ -58,13 +58,24 @@ pipeline {
                           -d '{"tag_name": "${tagName}", "name": "Build ${tagName}", "draft": false, "prerelease": false}' \
                           https://api.github.com/repos/${repo}/releases
                         """
+                        
+                        def releaseID = sh """
+                        echo (curl -L \
+                          -H "Accept: application/vnd.github+json" \
+                          -H "Authorization: Bearer <YOUR-TOKEN>" \
+                          -H "X-GitHub-Api-Version: 2026-03-10" \
+                          https://api.github.com/repos/${repo}/releases/tags/${tagName})
+                        """
+
 
                         sh """
                         curl -X POST \
+                          -H "Accept: application/vnd.github+json" \
                           -H "Authorization: token ${GITHUB_TOKEN}" \
                           -H "Content-Type: application/octet-stream" \
-                          --data-binary @${binaryPath} \
-                          https://uploads.github.com/repos/${repo}/releases/tags/${tagName}/assets?name=ansenfs
+                          -H "X-GitHub-Api-Version: 2026-03-10" \
+                          https://uploads.github.com/repos/${repo}/releases/tags/${tagName}/assets?name=ansenfs \
+                          --data-binary @${binaryPath}
                         """
                     }
                 }
