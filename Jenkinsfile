@@ -51,23 +51,21 @@ pipeline {
                         def binaryPath = "target/ansenfs"
                         def tagName = "v1.0.${BUILD_NUMBER}"
 
-                        sh """
-                        curl -X POST \
-                          -H "Authorization: token ${GITHUB_TOKEN}" \
-                          -H "Content-Type: application/json" \
-                          -d '{"tag_name": "${tagName}", "name": "Build ${tagName}", "draft": false, "prerelease": false}' \
-                          https://api.github.com/repos/${repo}/releases
-                        """
-                        
-                        def releaseID = sh """
-                        echo \$(curl -L \
-                          -H "Accept: application/vnd.github+json" \
-                          -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-                          -H "X-GitHub-Api-Version: 2026-03-10" \
-                          https://api.github.com/repos/${repo}/releases/tags/${tagName})
-                        """
+                        def response = sh(
+                          script: """
+                              curl -s -x post \
+                                -h "authorization: token ${github_token}" \
+                                -h "content-type: application/json" \
+                                -d '{"tag_name": "${tagname}", "name": "build ${tagname}", "draft": false, "prerelease": false}' \
+                                https://api.github.com/repos/${repo}/releases
+                          """,
+                          returnstdout: true
+                        ).trim()
 
+                        def json = readjson text: response
+                        def releaseid = json.id
 
+                        echo "created release with id: ${releaseid}"
                         sh """
                         curl -X POST \
                           -H "Accept: application/vnd.github+json" \
