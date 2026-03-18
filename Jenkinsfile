@@ -70,7 +70,7 @@ pipeline {
                           url: "https://uploads.github.com/repos/${repo}/releases/${releaseID}/assets?name=ansenfs",
                           aurhorization: "${GITHUB_TOKEN}",
                           httpMode: POST,
-                          Content-Type: APPLICATION_OCTETSTREAM,
+                          contentType: APPLICATION_OCTETSTREAM,
                           uploadFile: "${binaryPath}"
                         )
                     }
