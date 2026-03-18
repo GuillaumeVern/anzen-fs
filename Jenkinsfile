@@ -41,7 +41,7 @@ pipeline {
         
         stage('Archive Binary') {
             steps {
-                archiveArtifacts artifacts: 'target/ansenfs', fingerprint: true
+                archiveArtifacts artifacts: 'target/anzenfs', fingerprint: true
             }
         }
 
@@ -49,8 +49,8 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: '73183d21-d863-4fee-b138-d395cc209e0a', usernameVariable: 'GIT_USER', passwordVariable: 'GITHUB_TOKEN')]) {
-                        def repo = "GuillaumeVern/ansen-fs"
-                        def binaryPath = "target/ansenfs"
+                        def repo = "GuillaumeVern/anzen-fs"
+                        def binaryPath = "target/anzenfs"
                         def tagName = "v1.0.${BUILD_NUMBER}"
 
 
@@ -70,7 +70,7 @@ pipeline {
                           -H "Authorization: token \$GITHUB_TOKEN" \
                           -H "Content-Type: application/octet-stream" \
                           --data-binary @"${binaryPath}" \
-                          "https://uploads.github.com/repos/${repo}/releases/${releaseID}/assets?name=ansenfs"
+                          "https://uploads.github.com/repos/${repo}/releases/${releaseID}/assets?name=anzenfs"
                     """) 
                     }
                 }

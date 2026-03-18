@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.losvernos</groupId>
-	<artifactId>ansenfs</artifactId>
+	<artifactId>anzenfs</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ansenfs</name>
+	<name>anzenfs</name>
 	<description>Java web file manager</description>
 	<url/>
 	<licenses>

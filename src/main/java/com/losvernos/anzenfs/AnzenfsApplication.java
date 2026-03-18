@@ -1,4 +1,4 @@
-package com.losvernos.ansenfs;
+package com.losvernos.anzenfs;
 
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
@@ -6,9 +6,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportRuntimeHints;
 
-@ImportRuntimeHints(AnsenfsApplication.WebResourcesHints.class)
+@ImportRuntimeHints(AnzenfsApplication.WebResourcesHints.class)
 @SpringBootApplication
-public class AnsenfsApplication {
+public class AnzenfsApplication {
 
 	static class WebResourcesHints implements RuntimeHintsRegistrar {
         @Override
@@ -19,7 +19,7 @@ public class AnsenfsApplication {
     }
 
 	public static void main(String[] args) {
-		SpringApplication.run(AnsenfsApplication.class, args);
+		SpringApplication.run(AnzenfsApplication.class, args);
 	}
 
 }
