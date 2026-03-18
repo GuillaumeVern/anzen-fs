@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 pipeline {
     agent any
     
@@ -62,7 +64,7 @@ pipeline {
                           returnstdout: true
                         ).trim()
 
-                        def json = readjson text: response
+                        def json = new JsonSlurper().parse(response)
                         def releaseid = json.id
 
                         echo "created release with id: ${releaseid}"
