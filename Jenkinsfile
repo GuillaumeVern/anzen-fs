@@ -58,7 +58,7 @@ pipeline {
                         def releaseResponse = httpRequest(
                           url: "https://api.github.com/repos/${repo}/releases",
                           authorization: "${GITHUB_TOKEN}",
-                          httpMode: POST,
+                          httpMode: "POST",
                           requestBody: "{\"tag_name\": \"${tagname}\", \"name\": \"build ${tagname}\", \"draft\": false, \"prerelease\": false}"
                         )
 
@@ -69,8 +69,8 @@ pipeline {
                         httpRequest(
                           url: "https://uploads.github.com/repos/${repo}/releases/${releaseID}/assets?name=ansenfs",
                           aurhorization: "${GITHUB_TOKEN}",
-                          httpMode: POST,
-                          contentType: APPLICATION_OCTETSTREAM,
+                          httpMode: "POST",
+                          contentType: "APPLICATION_OCTETSTREAM",
                           uploadFile: "${binaryPath}"
                         )
                     }
