@@ -59,10 +59,10 @@ pipeline {
                           url: "https://api.github.com/repos/${repo}/releases",
                           authorization: "${GITHUB_TOKEN}",
                           httpMode: "POST",
-                          requestBody: "{\"tag_name\": \"${tagname}\", \"name\": \"build ${tagname}\", \"draft\": false, \"prerelease\": false}"
+                          requestBody: "{\"tag_name\": \"${tagName}\", \"name\": \"build ${tagName}\", \"draft\": false, \"prerelease\": false}"
                         )
 
-                        def releaseID = releaseResponse.content.id
+                        def releaseID = releaseResponse
 
                         echo "created release with id: ${releaseID}"
 
