@@ -53,30 +53,26 @@ pipeline {
                         def binaryPath = "target/ansenfs"
                         def tagName = "v1.0.${BUILD_NUMBER}"
 
-                        def response = sh(
-                          script: """
-                              curl -s -x post \
-                                -h "authorization: token ${github_token}" \
-                                -h "content-type: application/json" \
-                                -d '{"tag_name": "${tagname}", "name": "build ${tagname}", "draft": false, "prerelease": false}' \
-                                https://api.github.com/repos/${repo}/releases
-                          """,
-                          returnstdout: true
-                        ).trim()
 
-                        def json = new JsonSlurper().parse(response)
-                        def releaseid = json.id
 
-                        echo "created release with id: ${releaseid}"
-                        sh """
-                        curl -X POST \
-                          -H "Accept: application/vnd.github+json" \
-                          -H "Authorization: token ${GITHUB_TOKEN}" \
-                          -H "Content-Type: application/octet-stream" \
-                          -H "X-GitHub-Api-Version: 2026-03-10" \
-                          https://uploads.github.com/repos/${repo}/releases/${releaseID}/assets?name=ansenfs \
-                          --data-binary '@${binaryPath}'
-                        """
+                        def releaseResponse = httpRequest(
+                          url: "https://api.github.com/repos/${repo}/releases",
+                          authorization: "${GITHUB_TOKEN}",
+                          httpMode: POST,
+                          requestBody: "{\"tag_name\": \"${tagname}\", \"name\": \"build ${tagname}\", \"draft\": false, \"prerelease\": false}"
+                        )
+
+                        def releaseID = releaseResponse.content.id
+
+                        echo "created release with id: ${releaseID}"
+
+                        httpRequest(
+                          url: "https://uploads.github.com/repos/${repo}/releases/${releaseID}/assets?name=ansenfs",
+                          aurhorization: "${GITHUB_TOKEN}",
+                          httpMode: POST,
+                          Content-Type: APPLICATION_OCTETSTREAM,
+                          uploadFile: "${binaryPath}"
+                        )
                     }
                 }
             }
