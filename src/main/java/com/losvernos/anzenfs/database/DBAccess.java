@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class DBAccess {
 
     private static final String DB_NAME = "ansen.db";
-    private static final String APP_NAME = "ansenfs";
+    private static final String APP_NAME = "anzenfs";
 
     public static Connection getConnection() {
         String xdgDataHome = System.getenv("XDG_DATA_HOME");
