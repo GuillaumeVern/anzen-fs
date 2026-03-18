@@ -12,7 +12,7 @@ public class DBInitializer {
             xdgDataHome = System.getProperty("user.home") + File.separator + ".local" + File.separator + "share";
         }
         
-        File appDir = new File(xdgDataHome, "ansenfs");
+        File appDir = new File(xdgDataHome, "anzenfs");
         if (!appDir.exists()) appDir.mkdirs();
         
         File dbFile = new File(appDir, "ansen.db");
