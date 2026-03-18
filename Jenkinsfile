@@ -59,10 +59,10 @@ pipeline {
                           url: "https://api.github.com/repos/${repo}/releases",
                           customHeaders: [[name: 'Authorization', value: "token ${GITHUB_TOKEN}"]],
                           httpMode: "POST",
-                          requestBody: "{\"tag_name\": \"${tagName}\", \"name\": \"build ${tagName}\", \"draft\": false, \"prerelease\": false}"
+                          requestBody: """{"tag_name": "${tagName}", "name": "build ${tagName}", "draft": false, "prerelease": false}"""
                         )
 
-                        def releaseJson = readJSON text: response.content
+                        def releaseJson = readJSON text: releaseResponse.content
                         def releaseID = releaseJson.id
 
                         echo "created release with id: ${releaseID}"
@@ -72,7 +72,7 @@ pipeline {
                           customHeaders: [[name: 'Authorization', value: "token ${GITHUB_TOKEN}"]],
                           httpMode: "POST",
                           contentType: "APPLICATION_OCTETSTREAM",
-                          uploadFile: "${binaryPath}"
+                          uploadFile: binaryPath
                         )
                     }
                 }
