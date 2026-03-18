@@ -62,7 +62,8 @@ pipeline {
                           requestBody: "{\"tag_name\": \"${tagName}\", \"name\": \"build ${tagName}\", \"draft\": false, \"prerelease\": false}"
                         )
 
-                        def releaseID = releaseResponse
+                        def releaseJson = readJSON text: response.content
+                        def releaseID = releaseJson.id
 
                         echo "created release with id: ${releaseID}"
 
