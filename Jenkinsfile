@@ -65,14 +65,13 @@ pipeline {
                         def releaseID = new groovy.json.JsonSlurper().parseText(releaseResponse.content).id
                         
                         echo "created release with id: ${releaseID}"
-
-                        httpRequest(
-                          url: "https://uploads.github.com/repos/${repo}/releases/${releaseID}/assets?name=ansenfs",
-                          customHeaders: [[name: 'Authorization', value: "token ${GITHUB_TOKEN}"]],
-                          httpMode: "POST",
-                          contentType: "APPLICATION_OCTETSTREAM",
-                          uploadFile: binaryPath
-                        )
+                       sh(script: """
+                          curl -s -X POST \
+                          -H "Authorization: token \$GITHUB_TOKEN" \
+                          -H "Content-Type: application/octet-stream" \
+                          --data-binary @"${binaryPath}" \
+                          "https://uploads.github.com/repos/${repo}/releases/${releaseID}/assets?name=ansenfs"
+                    """) 
                     }
                 }
             }
