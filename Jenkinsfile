@@ -62,9 +62,10 @@ pipeline {
                           requestBody: """{"tag_name": "${tagName}", "name": "build ${tagName}", "draft": false, "prerelease": false}"""
                         )
 
-                        def releaseJson = readJSON text: releaseResponse.content
+                        def jsonSlurper = new JsonSlurper()
+                        def releaseJson = jsonSlurper.parseText(releaseResponse.content)
                         def releaseID = releaseJson.id
-
+                        
                         echo "created release with id: ${releaseID}"
 
                         httpRequest(
