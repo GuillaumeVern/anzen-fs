@@ -57,7 +57,7 @@
 				<groupId>org.graalvm.buildtools</groupId>
 				<artifactId>native-maven-plugin</artifactId>
 				<configuration>
-					<imageName>ansenfs</imageName>
+					<imageName>anzenfs</imageName>
 					<buildArgs>
 						<buildArg>-H:IncludeResources=.ansen.db$</buildArg>
 						<buildArg>--initialize-at-build-time=org.sqlite.util.ProcessRunner</buildArg>
