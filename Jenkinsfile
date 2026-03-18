@@ -34,7 +34,7 @@ pipeline {
         stage('Build Native Binary') {
             steps {
                 script {
-                    sh './mvnw clean package -Pnative -DskipTests native:compile'
+                    sh './mvnw clean package -Pnative -DskipTests native:compile -Dnative.buildArgs="--static --libc=glibc"'
                 }
             }
         }
