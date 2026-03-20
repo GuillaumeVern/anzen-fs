@@ -1,53 +1,52 @@
 package com.losvernos.anzenfs;
 
-import java.sql.SQLException;
-
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportRuntimeHints;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.losvernos.anzenfs.database.DBAccess;
-import com.losvernos.anzenfs.database.DBInitializer;
-
-import jakarta.annotation.PostConstruct;
+import com.losvernos.anzenfs.user.UserDAO;
+import com.losvernos.anzenfs.user.UserDTO;
 
 @ImportRuntimeHints(AnzenfsApplication.WebResourcesHints.class)
 @RestController
 @SpringBootApplication
 public class AnzenfsApplication {
 
-	@PostConstruct
-    public void init() {
-        DBInitializer.initialize();
+  private UserDAO userDAO = new UserDAO();
+
+  static class WebResourcesHints implements RuntimeHintsRegistrar {
+    @Override
+    public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+      // Force l'inclusion de tout le dossier static dans le binaire natif
+      hints.resources().registerPattern("static/browser/**");
     }
+  }
 
-	static class WebResourcesHints implements RuntimeHintsRegistrar {
-        @Override
-        public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-            // Force l'inclusion de tout le dossier static dans le binaire natif
-            hints.resources().registerPattern("static/browser/**");
-        }
-    }
+  @GetMapping("/users/create")
+  public void createUser() {
+    var user = new UserDTO();
+    user.setUsername("admin");
+    user.setPassword("admin");
+    userDAO.save(user);
+  }
 
-	@RequestMapping("/backend")
-	String home() throws SQLException {
-		var conn = DBAccess.getConnection();
-		var stmt = conn.createStatement();
-		var rs = stmt.executeQuery("SELECT username FROM users");
-		StringBuilder sb = new StringBuilder();
-		while (rs.next()) {
-			sb.append(rs.getString("username")).append("\n");
-		}
-		return sb.toString();
-	}
+  @GetMapping("/users")
+  public String getUsers() {
+    return userDAO.getAll().toString();
+  }
 
+  @GetMapping("/users/{id}")
+  public String getUserByID(@PathVariable long ID) {
+    return userDAO.get(ID).toString();
+  }
 
-	public static void main(String[] args) {
-		SpringApplication.run(AnzenfsApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(AnzenfsApplication.class, args);
+  }
 
 }

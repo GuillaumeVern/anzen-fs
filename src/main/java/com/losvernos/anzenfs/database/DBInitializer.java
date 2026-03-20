@@ -1,40 +1,59 @@
 package com.losvernos.anzenfs.database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-import java.io.File;
+import java.sql.SQLException;
 
 public class DBInitializer {
-   public static void initialize() {
-        String xdgDataHome = System.getenv("XDG_DATA_HOME");
-        if (xdgDataHome == null || xdgDataHome.isEmpty()) {
-            xdgDataHome = System.getProperty("user.home") + File.separator + ".local" + File.separator + "share";
-        }
-        
-        File appDir = new File(xdgDataHome, "anzenfs");
-        if (!appDir.exists()) appDir.mkdirs();
-        
-        File dbFile = new File(appDir, "ansen.db");
-        String url = "jdbc:sqlite:" + dbFile.getAbsolutePath();
 
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
+  public static void initialize() {
+    DBInitializer.createSchema();
+  }
 
-            stmt.execute("CREATE TABLE IF NOT EXISTS users (" +
-                         "id INTEGER PRIMARY KEY, " +
-                         "username TEXT NOT NULL, " +
-                         "role TEXT NOT NULL)");
-                         
-            stmt.execute("INSERT INTO users (username, role) VALUES " +
-                         "('admin', 'admin'), " +
-                         "('user1', 'user'), " +
-                         "('user2', 'user')");
+  private static void createSchema() {
+    var conn = DBManager.getInstance().getConnection();
 
-            
-            System.out.println("Database initialized at: " + dbFile.getAbsolutePath());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    try {
+      var stmt = conn.prepareStatement("""
+          CREATE TABLE IF NOT EXISTS roles (
+              role_id INTEGER PRIMARY KEY,
+              role_name TEXT NOT NULL
+          );""");
+      stmt.execute();
+
+      stmt = conn.prepareStatement("""
+          CREATE TABLE IF NOT EXISTS permissions (
+              permission_id INTEGER PRIMARY KEY,
+              permission_name TEXT NOT NULL
+          );
+          """);
+      stmt.execute();
+
+      stmt = conn.prepareStatement("""
+          CREATE TABLE IF NOT EXISTS users (
+              user_id INTEGER PRIMARY KEY,
+              username TEXT NOT NULL UNIQUE,
+              password TEXT NOT NULL
+          );""");
+      stmt.execute();
+
+      stmt = conn.prepareStatement("""
+          CREATE TABLE IF NOT EXISTS user_roles (
+              user_id INTEGER,
+              role_id INTEGER,
+              FOREIGN KEY(user_id) REFERENCES users(user_id),
+              FOREIGN KEY(role_id) REFERENCES roles(role_id)
+          );""");
+      stmt.execute();
+
+      stmt = conn.prepareStatement("""
+          CREATE TABLE IF NOT EXISTS role_permissions (
+              role_id INTEGER,
+              permission_id INTEGER,
+              FOREIGN KEY(role_id) REFERENCES roles(role_id),
+              FOREIGN KEY(permission_id) REFERENCES permissions(permission_id)
+          );""");
+      stmt.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
+  }
 }
