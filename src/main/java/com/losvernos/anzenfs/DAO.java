@@ -8,8 +8,6 @@ public interface DAO<T extends DTO> {
 
   public List<T> getAll();
 
-  public Optional<T> get(long ID);
-
   public void save(T elementToSave);
 
   public void update(T elementToUpdate, String[] params);

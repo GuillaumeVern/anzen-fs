@@ -1,6 +1,5 @@
-package com.losvernos.anzenfs.user;
+package com.losvernos.anzenfs.rbac.user;
 
-import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,9 +7,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import com.losvernos.anzenfs.DAO;
-import com.losvernos.anzenfs.database.DBManager;
+import org.springframework.stereotype.Service;
 
+import com.losvernos.anzenfs.DAO;
+import com.losvernos.anzenfs.rbac.database.DBManager;
+
+@Service
 public class UserDAO implements DAO<UserDTO> {
 
   public List<UserDTO> getAll() {
@@ -90,36 +92,5 @@ public class UserDAO implements DAO<UserDTO> {
     }
 
     return userDTOList;
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder result = new StringBuilder();
-    String newLine = System.getProperty("line.separator");
-
-    result.append(this.getClass().getName());
-    result.append(" Object {");
-    result.append(newLine);
-
-    // determine fields declared in this class only (no fields of superclass)
-    Field[] fields = this.getClass().getDeclaredFields();
-
-    // print field names paired with their values
-    for (Field field : fields) {
-      result.append("  ");
-      field.setAccessible(true);
-      try {
-        result.append(field.getName());
-        result.append(": ");
-        // requires access to private field:
-        result.append(field.get(this));
-      } catch (IllegalAccessException ex) {
-        System.out.println(ex);
-      }
-      result.append(newLine + newLine);
-    }
-    result.append("}");
-
-    return result.toString();
   }
 }

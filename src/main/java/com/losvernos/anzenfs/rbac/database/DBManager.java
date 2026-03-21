@@ -1,4 +1,4 @@
-package com.losvernos.anzenfs.database;
+package com.losvernos.anzenfs.rbac.database;
 
 import java.io.File;
 import java.io.IOException;

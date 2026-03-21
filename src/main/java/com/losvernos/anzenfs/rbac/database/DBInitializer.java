@@ -1,4 +1,4 @@
-package com.losvernos.anzenfs.database;
+package com.losvernos.anzenfs.rbac.database;
 
 import java.sql.SQLException;
 

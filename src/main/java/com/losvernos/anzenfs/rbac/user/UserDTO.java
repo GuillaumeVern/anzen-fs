@@ -1,15 +1,18 @@
-package com.losvernos.anzenfs.user;
+package com.losvernos.anzenfs.rbac.user;
 
 import java.lang.String;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.losvernos.anzenfs.DTO;
 
 public class UserDTO implements DTO {
 
   private long ID;
 
+  @JsonProperty("username")
   private String username;
 
+  @JsonProperty("password")
   private String password;
 
   @Override
