@@ -13,18 +13,18 @@ import com.losvernos.anzenfs.DAO;
 import com.losvernos.anzenfs.rbac.database.DBManager;
 
 @Service
-public class RoleDAO implements DAO<RoleDTO> {
+public class RoleDAO implements DAO<Role> {
 
-  public List<RoleDTO> getAll() {
+  public List<Role> getAll() {
     var conn = DBManager.getInstance().getConnection();
-    List<RoleDTO> rolesList = new ArrayList<RoleDTO>();
+    List<Role> rolesList = new ArrayList<Role>();
 
     try {
       var stmt = conn.prepareStatement("""
             SELECT * FROM roles;
           """);
       var resultSet = stmt.executeQuery();
-      rolesList = mapResultSetToDTO(resultSet);
+      rolesList = mapResultSetToRoles(resultSet);
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -32,9 +32,9 @@ public class RoleDAO implements DAO<RoleDTO> {
     return rolesList;
   }
 
-  public Optional<RoleDTO> get(long ID) {
+  public Optional<Role> get(long ID) {
     var conn = DBManager.getInstance().getConnection();
-    Optional<RoleDTO> result = Optional.empty();
+    Optional<Role> result = Optional.empty();
 
     try {
       var stmt = conn.prepareStatement("""
@@ -43,7 +43,7 @@ public class RoleDAO implements DAO<RoleDTO> {
 
       stmt.setInt(1, (int) ID);
       var resultSet = stmt.executeQuery();
-      var roleDTOList = mapResultSetToDTO(resultSet);
+      var roleDTOList = mapResultSetToRoles(resultSet);
       try {
         result = Optional.of(roleDTOList.getFirst());
       } catch (NoSuchElementException e) {
@@ -55,7 +55,7 @@ public class RoleDAO implements DAO<RoleDTO> {
     return result;
   }
 
-  public void save(RoleDTO elementToSave) {
+  public void save(Role elementToSave) {
     var conn = DBManager.getInstance().getConnection();
 
     try {
@@ -71,19 +71,19 @@ public class RoleDAO implements DAO<RoleDTO> {
     }
   }
 
-  public void update(RoleDTO elementToUpdate, String[] params) {
+  public void update(Role elementToUpdate, String[] params) {
     System.out.println("update role not implemented");
   }
 
-  public void delete(RoleDTO elementToDelete) {
+  public void delete(Role elementToDelete) {
     System.out.println("delete role not implemented");
   }
 
-  private List<RoleDTO> mapResultSetToDTO(ResultSet resultSet) throws SQLException {
-    var userDTOList = new ArrayList<RoleDTO>();
+  private List<Role> mapResultSetToRoles(ResultSet resultSet) throws SQLException {
+    var userDTOList = new ArrayList<Role>();
 
     while (resultSet.next()) {
-      var roleDTO = new RoleDTO();
+      var roleDTO = new Role();
       roleDTO.setID(resultSet.getLong("role_id"));
       roleDTO.setName(resultSet.getString("role_name"));
       userDTOList.add(roleDTO);

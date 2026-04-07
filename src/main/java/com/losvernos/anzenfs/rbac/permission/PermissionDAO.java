@@ -13,18 +13,18 @@ import com.losvernos.anzenfs.DAO;
 import com.losvernos.anzenfs.rbac.database.DBManager;
 
 @Service
-public class PermissionDAO implements DAO<PermissionDTO> {
+public class PermissionDAO implements DAO<Permission> {
 
-  public List<PermissionDTO> getAll() {
+  public List<Permission> getAll() {
     var conn = DBManager.getInstance().getConnection();
-    List<PermissionDTO> permissionsList = new ArrayList<PermissionDTO>();
+    List<Permission> permissionsList = new ArrayList<Permission>();
 
     try {
       var stmt = conn.prepareStatement("""
             SELECT * FROM permissions;
           """);
       var resultSet = stmt.executeQuery();
-      permissionsList = mapResultSetToDTO(resultSet);
+      permissionsList = mapResultSetToPermissions(resultSet);
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -32,9 +32,9 @@ public class PermissionDAO implements DAO<PermissionDTO> {
     return permissionsList;
   }
 
-  public Optional<PermissionDTO> get(long ID) {
+  public Optional<Permission> get(long ID) {
     var conn = DBManager.getInstance().getConnection();
-    Optional<PermissionDTO> result = Optional.empty();
+    Optional<Permission> result = Optional.empty();
 
     try {
       var stmt = conn.prepareStatement("""
@@ -43,9 +43,9 @@ public class PermissionDAO implements DAO<PermissionDTO> {
 
       stmt.setInt(1, (int) ID);
       var resultSet = stmt.executeQuery();
-      var permissionDTOList = mapResultSetToDTO(resultSet);
+      var permissionList = mapResultSetToPermissions(resultSet);
       try {
-        result = Optional.of(permissionDTOList.getFirst());
+        result = Optional.of(permissionList.getFirst());
       } catch (NoSuchElementException e) {
       }
     } catch (SQLException e) {
@@ -55,7 +55,7 @@ public class PermissionDAO implements DAO<PermissionDTO> {
     return result;
   }
 
-  public void save(PermissionDTO elementToSave) {
+  public void save(Permission elementToSave) {
     var conn = DBManager.getInstance().getConnection();
 
     try {
@@ -71,22 +71,22 @@ public class PermissionDAO implements DAO<PermissionDTO> {
     }
   }
 
-  public void update(PermissionDTO elementToUpdate, String[] params) {
+  public void update(Permission elementToUpdate, String[] params) {
     System.out.println("update permission not implemented");
   }
 
-  public void delete(PermissionDTO elementToDelete) {
+  public void delete(Permission elementToDelete) {
     System.out.println("delete permission not implemented");
   }
 
-  private List<PermissionDTO> mapResultSetToDTO(ResultSet resultSet) throws SQLException {
-    var userDTOList = new ArrayList<PermissionDTO>();
+  private List<Permission> mapResultSetToPermissions(ResultSet resultSet) throws SQLException {
+    var userDTOList = new ArrayList<Permission>();
 
     while (resultSet.next()) {
-      var permissionDTO = new PermissionDTO();
-      permissionDTO.setID(resultSet.getLong("permission_id"));
-      permissionDTO.setName(resultSet.getString("permission_name"));
-      userDTOList.add(permissionDTO);
+      var permission = new Permission();
+      permission.setID(resultSet.getLong("permission_id"));
+      permission.setName(resultSet.getString("permission_name"));
+      userDTOList.add(permission);
     }
 
     return userDTOList;

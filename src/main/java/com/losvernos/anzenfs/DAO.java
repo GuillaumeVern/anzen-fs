@@ -2,9 +2,8 @@ package com.losvernos.anzenfs;
 
 import java.util.List;
 import java.lang.String;
-import java.util.Optional;
 
-public interface DAO<T extends DTO> {
+public interface DAO<T> {
 
   public List<T> getAll();
 
