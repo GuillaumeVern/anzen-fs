@@ -17,23 +17,23 @@ import com.losvernos.anzenfs.rbac.role.Role;
 @RequestMapping("/api/users")
 public class UserController {
 
-  private UserDAO userDAO;
+  private UserRepository userRepository;
 
-  public UserController(UserDAO userDAO) {
-    this.userDAO = userDAO;
+  public UserController(UserRepository userRepository) {
+    this.userRepository = userRepository;
   }
 
   @PreAuthorize("hasRole('ADMIN') and hasAuthority('ADMIN_READ')")
   @GetMapping("")
   public List<GetUserRequest> getUsers() {
-    var users = userDAO.getAll();
+    var users = userRepository.getAll();
     var usersDTO = users.stream().map(user -> new GetUserRequest(user.getUsername(), user.getPassword())).toList();
     return usersDTO;
   }
 
   @GetMapping("/{id}")
   public User getUser(@PathVariable long id) {
-    return userDAO.get(id).get();
+    return userRepository.get(id).get();
   }
 
   @PostMapping("/create")
@@ -49,7 +49,7 @@ public class UserController {
         .password(createUserRequest.password())
         .userRoles(List.of(adminRole))
         .build();
-    userDAO.save(user);
+    userRepository.save(user);
   }
 
 }

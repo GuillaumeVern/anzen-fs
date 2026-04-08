@@ -9,11 +9,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.losvernos.anzenfs.DAO;
-import com.losvernos.anzenfs.rbac.database.DBManager;
+import com.losvernos.anzenfs.database.DBManager;
 
 @Service
-public class PermissionDAO implements DAO<Permission> {
+public class PermissionRepository {
 
   public List<Permission> getAll() {
     var conn = DBManager.getInstance().getConnection();

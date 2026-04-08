@@ -19,13 +19,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.losvernos.anzenfs.DAO;
-import com.losvernos.anzenfs.rbac.database.DBManager;
+import com.losvernos.anzenfs.database.DBManager;
 import com.losvernos.anzenfs.rbac.permission.Permission;
 import com.losvernos.anzenfs.rbac.role.Role;
 
 @Service
-public class UserDAO implements DAO<User> {
+public class UserRepository {
 
   @Autowired
   private PasswordEncoder passwordEncoder;
