@@ -296,25 +296,28 @@ public class UserDAO implements DAO<User> {
 
   @EventListener(ApplicationReadyEvent.class)
   public void initAdminAccount() {
-    User adminAccount = User.builder()
-        .username("admin")
-        .password("admin")
-        .userRoles(
-            List.of(
-                Role.builder()
-                    .name("ADMIN")
-                    .permissions(
-                        List.of(
-                            Permission.builder()
-                                .name("ADMIN_READ")
-                                .build(),
-                            Permission.builder()
-                                .name("ADMIN_READ")
-                                .build()))
-                    .build()))
-        .build();
+    User adminInDatabase = this.findByUsername("admin").orElse(new User());
+    if (null == adminInDatabase.getUsername()) {
+      User adminAccount = User.builder()
+          .username("admin")
+          .password("admin")
+          .userRoles(
+              List.of(
+                  Role.builder()
+                      .name("ADMIN")
+                      .permissions(
+                          List.of(
+                              Permission.builder()
+                                  .name("ADMIN_READ")
+                                  .build(),
+                              Permission.builder()
+                                  .name("ADMIN_READ")
+                                  .build()))
+                      .build()))
+          .build();
 
-    save(adminAccount);
+      save(adminAccount);
+    }
   }
 
   public void update(User elementToUpdate, String[] params) {
