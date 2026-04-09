@@ -43,7 +43,7 @@ public class FileRepository {
       stmt.setString(2, name);
       stmt.setString(3, type);
       stmt.setString(4, hash);
-      stmt.setString(4, externalId);
+      stmt.setString(5, externalId);
       stmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();

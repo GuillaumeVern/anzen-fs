@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public class FileService {
         String fileName = Path.of(relativePath).getFileName().toString();
         saveToDisk(file, relativePath);
 
-        String hash = generateHeuristicHash(file);
+        String hash = generateHeuristicHash(Path.of(relativePath));
         fileRepository.insertFile(folderId, fileName, "FILE", hash);
 
         // TODO: implement progress streaming with UploadTaskSummary
@@ -70,11 +71,12 @@ public class FileService {
     Files.move(file, targetLocation);
   }
 
-  private String generateHeuristicHash(Path file) {
+  private String generateHeuristicHash(Path file) throws IOException {
     try {
       String name = file.toString();
-      long size = Files.size(file);
-      long timestamp = Files.getLastModifiedTime(file).toMillis();
+      Path fullPath = storageRoot.resolve(file);
+      long size = Files.size(fullPath);
+      long timestamp = Files.getLastModifiedTime(fullPath).toMillis();
 
       String rawInput = String.format("%s:%d:%d", name, size, timestamp);
 
@@ -82,7 +84,7 @@ public class FileService {
       byte[] encodedHash = digest.digest(rawInput.getBytes(StandardCharsets.UTF_8));
 
       return HexFormat.of().formatHex(encodedHash);
-    } catch (Exception e) {
+    } catch (NoSuchAlgorithmException e) {
       throw new RuntimeException("SHA-256 algorithm not found", e);
     }
   }
