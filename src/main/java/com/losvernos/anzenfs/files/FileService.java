@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,14 @@ public class FileService {
         System.err.println(e);
       }
     }
+  }
+
+  public List<FileNode> getChildrenAfter(String parentUuid, String lastFileName, int limit) {
+    Integer parentId = (parentUuid == null) ? 1
+        : fileRepository.findIdByUuid(parentUuid)
+            .orElseThrow(() -> new RuntimeException("Folder not found"));
+
+    return fileRepository.getChildrenAfter(parentId, lastFileName, parentUuid, limit);
   }
 
   private Integer resolveFolderHierarchy(Integer rootId, Path path) {

@@ -56,15 +56,17 @@ public class DBInitializer {
       stmt.execute();
 
       stmt = conn.prepareStatement("""
-          CREATE TABLE IF NOT EXISTS files (
-            file_id INTEGER PRIMARY KEY,
-            external_id TEXT UNIQUE,
-            parent_id INTEGER,
-            name TEXT NOT NULL,
-            type TEXT,
-            file_hash TEXT,
-            FOREIGN KEY (parent_id) REFERENCES files(file_id) ON DELETE CASCADE
-          );""");
+            CREATE TABLE IF NOT EXISTS files (
+              file_id INTEGER PRIMARY KEY,
+              external_id TEXT UNIQUE NOT NULL,
+              parent_id INTEGER,
+              name TEXT NOT NULL,
+              type TEXT NOT NULL,
+              file_hash TEXT,
+              FOREIGN KEY (parent_id) REFERENCES files(file_id) ON DELETE CASCADE
+            );
+            CREATE INDEX IF NOT EXISTS idx_parent_name ON files (parent_id, name);
+          """);
       stmt.execute();
 
       stmt = conn.prepareStatement("""
