@@ -14,7 +14,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtils {
-  private final String SECRET; //TODO: get from env;
+  private final String SECRET = "Really long secret string that is really really long";
   private final Key signingKey = Keys.hmacShaKeyFor(SECRET.getBytes());
 
   public String generateToken(String username, List<String> roles) {
