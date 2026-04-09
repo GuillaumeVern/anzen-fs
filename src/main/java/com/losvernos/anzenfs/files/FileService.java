@@ -28,12 +28,23 @@ public class FileService {
         if (null == relativePath)
           continue;
 
-        Integer folderId = resolveFolderHierarchy(rootParentId, relativePath);
+        Path incomingPath = Path.of(relativePath);
+        if (incomingPath.isAbsolute()) {
+          incomingPath = incomingPath.getRoot().relativize(incomingPath);
+        }
+
+        Path targetLocation = storageRoot.resolve(incomingPath).normalize();
+
+        if (!targetLocation.startsWith(storageRoot)) {
+          throw new SecurityException("Escape attempt detected: " + relativePath);
+        }
+
+        Integer folderId = resolveFolderHierarchy(rootParentId, incomingPath);
 
         String fileName = Path.of(relativePath).getFileName().toString();
-        saveToDisk(file, relativePath);
+        saveToDisk(file, targetLocation);
 
-        String hash = generateHeuristicHash(Path.of(relativePath));
+        String hash = generateHeuristicHash(incomingPath);
         fileRepository.insertFile(folderId, fileName, "FILE", hash);
 
         // TODO: implement progress streaming with UploadTaskSummary
@@ -43,8 +54,8 @@ public class FileService {
     }
   }
 
-  private Integer resolveFolderHierarchy(Integer rootId, String fullPath) {
-    Path path = Path.of(fullPath).getParent();
+  private Integer resolveFolderHierarchy(Integer rootId, Path path) {
+    path = path.getParent();
     if (null == path)
       return rootId;
 
@@ -65,8 +76,7 @@ public class FileService {
     return currentParentId;
   }
 
-  private void saveToDisk(Path file, String relativePath) throws IOException {
-    Path targetLocation = storageRoot.resolve(relativePath);
+  private void saveToDisk(Path file, Path targetLocation) throws IOException {
     Files.createDirectories(targetLocation.getParent());
     Files.move(file, targetLocation);
   }
