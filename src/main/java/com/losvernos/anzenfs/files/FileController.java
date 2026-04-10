@@ -31,7 +31,7 @@ public class FileController {
 
   @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<UploadTaskSummary> upload(
-      @RequestParam(required = false) Integer parentId,
+      @RequestParam(required = false) String parentUuid,
       @RequestPart("files") MultipartFile[] files) throws IOException {
 
     String taskId = java.util.UUID.randomUUID().toString();
@@ -49,7 +49,7 @@ public class FileController {
     }
 
     Thread.ofVirtual().start(() -> {
-      fileService.processFolderUpload(taskId, parentId, stagingDir, files);
+      fileService.processFolderUpload(taskId, parentUuid, stagingDir, files);
       FileUtils.deleteDirectory(stagingDir);
     });
 

@@ -21,7 +21,7 @@ public class FileService {
   private FileRepository fileRepository;
   private final Path storageRoot = new File(FileUtils.getDataDir(), "data").toPath();
 
-  public void processFolderUpload(String taskId, Integer rootParentId, Path stagingDir, MultipartFile[] files) {
+  public void processFolderUpload(String taskId, String rootParentUuid, Path stagingDir, MultipartFile[] files) {
     for (int i = 0; i < files.length; i++) {
       try {
         Path file = stagingDir.resolve("file_" + i);
@@ -40,6 +40,7 @@ public class FileService {
           throw new SecurityException("Escape attempt detected: " + relativePath);
         }
 
+        Integer rootParentId = fileRepository.findIdByUuid(rootParentUuid).orElse(1);
         Integer folderId = resolveFolderHierarchy(rootParentId, incomingPath);
 
         String fileName = Path.of(relativePath).getFileName().toString();

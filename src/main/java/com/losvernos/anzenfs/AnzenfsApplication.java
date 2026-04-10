@@ -2,13 +2,20 @@ package com.losvernos.anzenfs;
 
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.ImportRuntimeHints;
+import org.springframework.context.event.EventListener;
+
+import jakarta.servlet.MultipartConfigElement;
 
 @ImportRuntimeHints(AnzenfsApplication.WebResourcesHints.class)
 @SpringBootApplication
 public class AnzenfsApplication {
+  @Autowired
+  MultipartConfigElement multipartConfigElement;
 
   static class WebResourcesHints implements RuntimeHintsRegistrar {
     @Override
@@ -16,6 +23,12 @@ public class AnzenfsApplication {
       // Force l'inclusion de tout le dossier static dans le binaire natif
       hints.resources().registerPattern("static/browser/**");
     }
+  }
+
+  @EventListener(ApplicationReadyEvent.class)
+  public void checkLimits() {
+    System.out.println("Max File Size: " + multipartConfigElement.getMaxFileSize());
+    System.out.println("Max Request Size: " + multipartConfigElement.getMaxRequestSize());
   }
 
   public static void main(String[] args) {
