@@ -1,6 +1,6 @@
-package com.losvernos.anzenfs.tasks;
+package com.losvernos.anzenfs.jobs;
 
-public record UploadTaskSummary(
+public record UploadJobSummary(
     String taskId,
     int totalFiles,
     int processedFiles,

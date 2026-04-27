@@ -19,9 +19,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileService {
   @Autowired
   private FileRepository fileRepository;
+
   private final Path storageRoot = new File(FileUtils.getDataDir(), "data").toPath();
 
-  public void processFolderUpload(String taskId, String rootParentUuid, Path stagingDir, MultipartFile[] files) {
+  private final Path stagingDir = new File(FileUtils.getDataDir(), "staging").toPath();
+
+  public void processFolderUpload(String jobId, String rootParentUuid, MultipartFile[] files) {
     for (int i = 0; i < files.length; i++) {
       try {
         Path file = stagingDir.resolve("file_" + i);
@@ -49,7 +52,6 @@ public class FileService {
         String hash = generateHeuristicHash(incomingPath);
         fileRepository.insertFile(folderId, fileName, "FILE", hash);
 
-        // TODO: implement progress streaming with UploadTaskSummary
       } catch (Exception e) {
         System.err.println(e);
       }
